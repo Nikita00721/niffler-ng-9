@@ -2,6 +2,7 @@ package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.SpendJson;
@@ -20,6 +21,7 @@ public class SpendingTest {
       description = "Advanced 9 поток!",
       category = "Обучение"
   )
+  @DisabledByIssue("2")
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin(SpendJson spendJson) {
     final String newDescription = ":)";
