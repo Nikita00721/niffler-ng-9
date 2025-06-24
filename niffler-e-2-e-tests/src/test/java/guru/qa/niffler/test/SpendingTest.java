@@ -21,7 +21,7 @@ public class SpendingTest {
       description = "Advanced 9 поток!",
       category = "Обучение"
   )
-  @DisabledByIssue("2")
+  @DisabledByIssue("777")
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin(SpendJson spendJson) {
     final String newDescription = ":)";

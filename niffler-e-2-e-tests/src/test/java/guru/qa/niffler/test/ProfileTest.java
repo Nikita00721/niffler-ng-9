@@ -7,7 +7,6 @@ import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 
-
 public class ProfileTest {
 
     private static final Config CFG = Config.getInstance();
