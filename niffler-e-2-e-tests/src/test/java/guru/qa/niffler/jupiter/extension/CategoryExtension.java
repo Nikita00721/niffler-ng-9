@@ -19,13 +19,15 @@ public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,
                 Category.class
         ).ifPresent(
                 anno -> {
-                    String uniqueName = anno.name() + "_" + UUID.randomUUID();
+                    String categoryName = anno.name().isEmpty()
+                            ? "Category_" + UUID.randomUUID()
+                            : anno.name() + "_" + UUID.randomUUID();
 
                     CategoryJson categoryJson = new CategoryJson(
-                            UUID.randomUUID(),
-                            uniqueName,
+                            null,
+                            categoryName,
                             anno.username(),
-                            anno.isArchive()
+                            false
                     );
                     context.getStore(NAMESPACE).put(
                             context.getUniqueId(),

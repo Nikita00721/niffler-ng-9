@@ -49,19 +49,26 @@ public class ProfilePage {
         return this;
     }
 
-    public ProfilePage checkToIncTableRowsAfterUnarchiveCategory() {
-        int initialCount = categoryItems.size();
-        switchArchiveVision();
-        unarchiveCat();
-        switchArchiveVision();
-        categoryItems.shouldHave(CollectionCondition.size(initialCount ));
+    public ProfilePage assertCategoriesSize(int expectedSize) {
+        categoryItems.shouldHave(CollectionCondition.size(expectedSize));
         return this;
     }
 
+    public int getCategorySize() {
+        return categoryItems.size();
+    }
+
+    public ProfilePage checkToIncTableRowsAfterUnarchiveCategory() {
+        int initialCount = getCategorySize();
+        switchArchiveVision();
+        unarchiveCat();
+        switchArchiveVision();
+        return assertCategoriesSize(initialCount);
+    }
+
     public ProfilePage checkToReduceTableRowsAfterArchiveTopCategory() {
-        int initialCount = categoryItems.size();
+        int initialCount = getCategorySize();
         archiveFirstCat();
-        categoryItems.shouldHave(CollectionCondition.size(initialCount - 1));
-        return this;
+        return assertCategoriesSize(initialCount - 1);
     }
 }
