@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -55,8 +56,8 @@ public class RegisterPage {
     }
 
     public RegisterPage checkPasswordShouldBeEqualErrorMessage() {
-        errorMessage.should(visible);
-        errorMessage.getText().equals(ErrorMessages.PASSWORDS_SHOULD_BE_EQUAL.getText());
+        errorMessage.shouldBe(visible)
+                .shouldHave(text(ErrorMessages.PASSWORDS_SHOULD_BE_EQUAL.getText()));
         return this;
     }
 }

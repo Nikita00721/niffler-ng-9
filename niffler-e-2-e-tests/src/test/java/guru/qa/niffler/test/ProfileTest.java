@@ -4,6 +4,7 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 
 
@@ -17,14 +18,16 @@ public class ProfileTest {
             isArchive = false
     )
     @Test
-    public void archiveCategory(){
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+    public void archiveCategory() {
+        ProfilePage profilePage = Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage("duck", "12345")
                 .submit()
-                .checkThatPageLoaded()
                 .navigateToProfilePage()
-                .checkThatPageLoaded()
-                .checkToReduceTableRowsAfterArchiveTopCategory();
+                .checkThatPageLoaded();
+
+        int initialSize = profilePage.getCategorySize();
+        profilePage.archiveFirstCat()
+                .assertCategoriesSize(initialSize - 1);
     }
 
     @Category(
@@ -34,13 +37,16 @@ public class ProfileTest {
     )
     @Test
     public void unarchiveCategory() {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        ProfilePage profilePage = Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage("duck", "12345")
                 .submit()
-                .checkThatPageLoaded()
                 .navigateToProfilePage()
-                .checkThatPageLoaded()
-                .archiveFirstCat()
-                .checkToIncTableRowsAfterUnarchiveCategory();
+                .checkThatPageLoaded();
+
+        int initialSize = profilePage.getCategorySize();
+        profilePage.switchArchiveVision()
+                .unarchiveCat()
+                .switchArchiveVision()
+                .assertCategoriesSize(initialSize + 1);
     }
 }

@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -40,8 +41,8 @@ public class LoginPage {
   }
 
   public LoginPage checkBadCredentialsErrorMessage() {
-    badCredentialsErrorMessage.should(visible);
-    badCredentialsErrorMessage.getText().equals(ErrorMessages.BAD_CREDENTIALS.getText());
+    badCredentialsErrorMessage.shouldBe(visible)
+            .shouldHave(text(ErrorMessages.BAD_CREDENTIALS.getText()));
     return this;
   }
 }
