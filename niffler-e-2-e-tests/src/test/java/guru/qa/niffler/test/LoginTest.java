@@ -6,6 +6,8 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+
 @WebTest
 public class LoginTest {
 
@@ -25,7 +27,7 @@ public class LoginTest {
   @Test
   void userGetBadCredentialsErrorMessageWithWrongPassword() {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-            .fillLoginPage(correctLogin, uncorrectPassword)
+            .fillLoginPage(randomUsername(), uncorrectPassword)
             .clickSubmitButton()
             .checkBadCredentialsErrorMessage();
   }
