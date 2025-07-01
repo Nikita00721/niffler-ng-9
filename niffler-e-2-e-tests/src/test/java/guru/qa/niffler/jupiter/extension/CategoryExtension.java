@@ -8,6 +8,8 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.UUID;
 
+import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
+
 public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,ParameterResolver {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
     private final SpendApiClient spendApiClient = new SpendApiClient();
@@ -65,6 +67,12 @@ public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryExtension.class);
+        return createdCategory();
+    }
+
+    public static CategoryJson createdCategory() {
+        final ExtensionContext methodContext = context();
+        return methodContext.getStore(NAMESPACE)
+                .get(methodContext.getUniqueId(), CategoryJson.class);
     }
 }
