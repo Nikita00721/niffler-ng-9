@@ -3,6 +3,7 @@ package guru.qa.niffler.test;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
@@ -11,10 +12,11 @@ public class ProfileTest {
 
     private static final Config CFG = Config.getInstance();
 
-    @Category(
-            name = "CatyArc_",
+    @User(
             username = "duck",
-            isArchive = false
+            categories = @Category(
+                    isArchive = false
+            )
     )
     @Test
     public void archiveCategory() {
@@ -29,10 +31,11 @@ public class ProfileTest {
                 .assertCategoriesSize(initialSize - 1);
     }
 
-    @Category(
-            name = "CatUnarch_",
+    @User(
             username = "duck",
-            isArchive = false
+            categories = @Category(
+                    isArchive = false
+            )
     )
     @Test
     public void unarchiveCategory() {
