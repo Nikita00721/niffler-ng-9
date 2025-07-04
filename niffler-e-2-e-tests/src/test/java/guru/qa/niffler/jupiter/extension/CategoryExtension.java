@@ -4,6 +4,7 @@ import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.service.CategoryDbClient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -14,6 +15,7 @@ import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
 public class CategoryExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
     private final SpendApiClient spendApiClient = new SpendApiClient();
+    private final CategoryDbClient categoryDbClient = new CategoryDbClient();
 
 
     @Override
@@ -29,7 +31,8 @@ public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,
                                 categoryAnno.isArchive()
                         );
 
-                        CategoryJson created = spendApiClient.createCategory(category);
+                        CategoryJson created = categoryDbClient.createCategory(category);
+
                         if (categoryAnno.isArchive()) {
                             CategoryJson archivedCategory = new CategoryJson(
                                     created.id(),
@@ -50,16 +53,16 @@ public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-//        CategoryJson category = createdCategory();
-//        if (category != null && !category.archived()) {
-//            category = new CategoryJson(
-//                    category.id(),
-//                    category.name(),
-//                    category.username(),
-//                    true
-//            );
-//            spendApiClient.updateCategory(category);
-//        }
+        CategoryJson category = createdCategory();
+        if (category != null && !category.archived()) {
+            category = new CategoryJson(
+                    category.id(),
+                    category.name(),
+                    category.username(),
+                    true
+            );
+            spendApiClient.updateCategory(category);
+        }
     }
 
     @Override

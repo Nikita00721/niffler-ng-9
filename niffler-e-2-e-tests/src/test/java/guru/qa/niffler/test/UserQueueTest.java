@@ -3,10 +3,14 @@ package guru.qa.niffler.test;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.service.SpendDbClient;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
@@ -60,5 +64,13 @@ public class UserQueueTest {
                 .checkThatPageLoaded()
                 .openAllPeoplesList()
                 .checkOneElementHasWaitingStatus();
+    }
+
+    @Test
+    void qwe() {
+        SpendDbClient spendDbClient = new SpendDbClient();
+
+        List<SpendJson> newJson = spendDbClient.findSpendsByUsername("duck");
+        System.out.println(newJson);
     }
 }
