@@ -3,8 +3,6 @@ package guru.qa.niffler.test;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.LoginPage;
@@ -12,7 +10,7 @@ import guru.qa.niffler.service.SpendDbClient;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
+import java.util.List;
 
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
@@ -72,22 +70,7 @@ public class UserQueueTest {
     void qwe() {
         SpendDbClient spendDbClient = new SpendDbClient();
 
-        SpendJson spend = spendDbClient.createSpend(
-                new SpendJson(
-                        null,
-                        new Date(),
-                        new CategoryJson(
-                                null,
-                                "test123",
-                                "duck",
-                                false
-                        ),
-                        CurrencyValues.RUB,
-                        100.0,
-                        "test dec123",
-                        "deck"
-                )
-        );
-        System.out.println(spend);
+        List<SpendJson> newJson = spendDbClient.findSpendsByUsername("duck");
+        System.out.println(newJson);
     }
 }
