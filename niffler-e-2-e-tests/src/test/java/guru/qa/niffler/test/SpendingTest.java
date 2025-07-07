@@ -21,7 +21,7 @@ public class SpendingTest {
           @Spending(
               description = "Advanced 9 поток!",
               amount = 777.00,
-              category = "Обучение"
+              category = "Обучение1"
           )
       }
   )
