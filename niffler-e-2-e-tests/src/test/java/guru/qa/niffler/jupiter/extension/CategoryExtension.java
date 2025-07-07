@@ -55,13 +55,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,
     public void afterEach(ExtensionContext context) throws Exception {
         CategoryJson category = createdCategory();
         if (category != null && !category.archived()) {
-            category = new CategoryJson(
-                    category.id(),
-                    category.name(),
-                    category.username(),
-                    true
-            );
-            spendApiClient.updateCategory(category);
+            categoryDbClient.deleteCategory(category);
         }
     }
 
