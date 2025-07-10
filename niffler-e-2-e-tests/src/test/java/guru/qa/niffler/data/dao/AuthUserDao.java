@@ -3,9 +3,10 @@ package guru.qa.niffler.data.dao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface AuthUserDao {
-    Optional<AuthUserEntity> getAuthUserByLogin(String login);
-    AuthUserEntity createUser(AuthUserEntity authUserEntity);
-    void deleteUserByLogin(String login);
+    AuthUserEntity create(AuthUserEntity user);
+
+    Optional<AuthUserEntity> findById(UUID id);
 }

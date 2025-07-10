@@ -29,8 +29,8 @@ public class UserDaoJdbc implements UserDao {
                 Statement.RETURN_GENERATED_KEYS
         )) {
             ps.setString(1, user.getCurrency().name());
-            ps.setString(2, user.getFirstName());
-            ps.setString(3, user.getFullName());
+            ps.setString(2, user.getFirstname());
+            ps.setString(3, user.getFullname());
             ps.setString(4, Arrays.toString(user.getPhoto()));
             ps.setString(5, Arrays.toString(user.getPhotoSmall()));
             ps.setString(6, user.getSurname());
@@ -64,8 +64,8 @@ public class UserDaoJdbc implements UserDao {
                     UserEntity user = new UserEntity();
                     user.setId(rs.getObject("id", UUID.class));
                     user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-                    user.setFirstName(rs.getString("firstname"));
-                    user.setFullName(rs.getString("full_name"));
+                    user.setFirstname(rs.getString("firstname"));
+                    user.setFullname(rs.getString("full_name"));
                     user.setPhoto(rs.getBytes("photo"));
                     user.setPhotoSmall(rs.getBytes("photo_small"));
                     user.setSurname(rs.getString("surname"));
@@ -91,8 +91,8 @@ public class UserDaoJdbc implements UserDao {
                     UserEntity user = new UserEntity();
                     user.setId(rs.getObject("id", UUID.class));
                     user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-                    user.setFirstName(rs.getString("firstname"));
-                    user.setFullName(rs.getString("full_name"));
+                    user.setFirstname(rs.getString("firstname"));
+                    user.setFullname(rs.getString("full_name"));
                     user.setPhoto(rs.getBytes("photo"));
                     user.setPhotoSmall(rs.getBytes("photo_small"));
                     user.setSurname(rs.getString("surname"));

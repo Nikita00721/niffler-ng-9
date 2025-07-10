@@ -24,11 +24,11 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public Optional<AuthUserEntity> getAuthUserByLogin(String login) {
+    public Optional<AuthUserEntity> findById(UUID uuid) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM spend WHERE username = ?"
+                "SELECT * FROM spend WHERE id = ?"
         )) {
-            ps.setString(1, login);
+            ps.setObject(1, uuid);
             ps.execute();
 
             try (ResultSet rs = ps.getResultSet()) {
@@ -51,7 +51,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public AuthUserEntity createUser(AuthUserEntity authUserEntity) {
+    public AuthUserEntity create(AuthUserEntity authUserEntity) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO spend (username, password, account_non_expired, account_non_locked, credentials_non_expired) " +
                         "VALUES (?, ?, ?, ?, ?)",
@@ -73,18 +73,6 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 }
             }
             return authUserEntity;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void deleteUserByLogin(String login) {
-        try (PreparedStatement ps = connection.prepareStatement(
-                "DELETE FROM spend WHERE username = ?"
-        )) {
-            ps.setString(1, login);
-            ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
