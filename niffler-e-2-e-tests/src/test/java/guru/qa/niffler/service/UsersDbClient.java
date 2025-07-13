@@ -13,12 +13,15 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.UserJson;
+import org.springframework.data.transaction.ChainedTransactionManager;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class UsersDbClient {
 
@@ -39,6 +42,18 @@ public class UsersDbClient {
             CFG.authJdbcUrl(),
             CFG.userdataJdbcUrl()
     );
+
+    //ChainedTransactionManager
+    private final TransactionTemplate chainedTxTemplate;
+
+    public UsersDbClient() {
+        var authDs = DataSources.dataSource(CFG.authJdbcUrl());
+        var userdataDs = DataSources.dataSource(CFG.userdataJdbcUrl());
+        var authTxManager = new DataSourceTransactionManager(authDs);
+        var userdataTxManager = new DataSourceTransactionManager(userdataDs);
+        var chainedTxManager = new ChainedTransactionManager(authTxManager, userdataTxManager);
+        this.chainedTxTemplate = new TransactionTemplate(chainedTxManager);
+    }
 
     public UserJson createUserSpringJdbc(UserJson user) throws Exception {
         return xaTransactionTemplate.execute(() -> {
@@ -62,6 +77,31 @@ public class UsersDbClient {
                     }
             ).toArray(AuthorityEntity[]::new);
 
+            authAuthorityDao.create(authorityEntities);
+            return null;
+        });
+    }
+
+    // Пример использования ChainedTransactionManager для распределённой транзакции
+    public void createUserWithChainedTx(UserJson user) {
+        chainedTxTemplate.execute(status -> {
+            AuthUserEntity authUser = new AuthUserEntity();
+            authUser.setUsername(user.username());
+            authUser.setPassword(pe.encode("12345"));
+            authUser.setEnabled(true);
+            authUser.setAccountNonExpired(true);
+            authUser.setAccountNonLocked(true);
+            authUser.setCredentialsNonExpired(true);
+            AuthUserEntity createdAuthUser = authUserDao.create(authUser);
+
+            AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
+                    e -> {
+                        AuthorityEntity ae = new AuthorityEntity();
+                        ae.setUserId(createdAuthUser.getId());
+                        ae.setAuthority(e);
+                        return ae;
+                    }
+            ).toArray(AuthorityEntity[]::new);
             authAuthorityDao.create(authorityEntities);
             return null;
         });
@@ -108,4 +148,104 @@ public class UsersDbClient {
 //                ),
 //                null);
 //    }
+
+    // JDBC без транзакции
+    public UserJson createUserJdbcNoTx(UserJson user) {
+        AuthUserEntity authUser = new AuthUserEntity();
+        authUser.setUsername(user.username());
+        authUser.setPassword(pe.encode("12345"));
+        authUser.setEnabled(true);
+        authUser.setAccountNonExpired(true);
+        authUser.setAccountNonLocked(true);
+        authUser.setCredentialsNonExpired(true);
+        AuthUserEntity createdAuthUser = authUserDao.create(authUser);
+
+        AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
+                e -> {
+                    AuthorityEntity ae = new AuthorityEntity();
+                    ae.setUserId(createdAuthUser.getId());
+                    ae.setAuthority(e);
+                    return ae;
+                }
+        ).toArray(AuthorityEntity[]::new);
+        authAuthorityDao.create(authorityEntities);
+        return user;
+    }
+
+    // JDBC с транзакцией
+    public UserJson createUserJdbcWithTx(UserJson user) {
+        return txTemplate.execute(status -> {
+            AuthUserEntity authUser = new AuthUserEntity();
+            authUser.setUsername(user.username());
+            authUser.setPassword(pe.encode("12345"));
+            authUser.setEnabled(true);
+            authUser.setAccountNonExpired(true);
+            authUser.setAccountNonLocked(true);
+            authUser.setCredentialsNonExpired(true);
+            AuthUserEntity createdAuthUser = authUserDao.create(authUser);
+
+            AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
+                    e -> {
+                        AuthorityEntity ae = new AuthorityEntity();
+                        ae.setUserId(createdAuthUser.getId());
+                        ae.setAuthority(e);
+                        return ae;
+                    }
+            ).toArray(AuthorityEntity[]::new);
+            authAuthorityDao.create(authorityEntities);
+            return user;
+        });
+    }
+
+    // Spring-JDBC без транзакции (обычный вызов)
+    public UserJson createUserSpringJdbcNoTx(UserJson user) {
+        AuthUserEntity authUser = new AuthUserEntity();
+        authUser.setUsername(user.username());
+        authUser.setPassword(pe.encode("12345"));
+        authUser.setEnabled(true);
+        authUser.setAccountNonExpired(true);
+        authUser.setAccountNonLocked(true);
+        authUser.setCredentialsNonExpired(true);
+        AuthUserEntity createdAuthUser = authUserDao.create(authUser);
+
+        AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
+                e -> {
+                    AuthorityEntity ae = new AuthorityEntity();
+                    ae.setUserId(createdAuthUser.getId());
+                    ae.setAuthority(e);
+                    return ae;
+                }
+        ).toArray(AuthorityEntity[]::new);
+        authAuthorityDao.create(authorityEntities);
+        return user;
+    }
+
+    // Spring-JDBC с транзакцией (TransactionTemplate)
+    public UserJson createUserSpringJdbcWithTx(UserJson user) {
+        return txTemplate.execute(status -> {
+            AuthUserEntity authUser = new AuthUserEntity();
+            authUser.setUsername(user.username());
+            authUser.setPassword(pe.encode("12345"));
+            authUser.setEnabled(true);
+            authUser.setAccountNonExpired(true);
+            authUser.setAccountNonLocked(true);
+            authUser.setCredentialsNonExpired(true);
+            AuthUserEntity createdAuthUser = authUserDao.create(authUser);
+
+            AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
+                    e -> {
+                        AuthorityEntity ae = new AuthorityEntity();
+                        ae.setUserId(createdAuthUser.getId());
+                        ae.setAuthority(e);
+                        return ae;
+                    }
+            ).toArray(AuthorityEntity[]::new);
+            authAuthorityDao.create(authorityEntities);
+            return user;
+        });
+    }
+    // Поиск всех пользователей (Spring-JDBC)
+    public List<AuthUserEntity> findAllAuthUsers() {
+        return authUserDao.findAll();
+    }
 }
