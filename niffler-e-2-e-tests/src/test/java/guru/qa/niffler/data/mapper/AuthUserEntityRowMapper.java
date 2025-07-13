@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.dao.mapper;
+package guru.qa.niffler.data.mapper;
 
 
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
