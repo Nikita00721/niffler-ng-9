@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,6 +45,31 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<AuthUserEntity> findAll() {
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM spend"
+        )) {
+            ps.execute();
+
+            try (ResultSet rs = ps.getResultSet()) {
+                List<AuthUserEntity> authUserEntities = new java.util.ArrayList<>();
+                while (rs.next()) {
+                    AuthUserEntity authUserEntity = new AuthUserEntity();
+                    authUserEntity.setId(rs.getObject("id", UUID.class));
+                    authUserEntity.setUsername(rs.getString("username"));
+                    authUserEntity.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+                    authUserEntity.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+                    authUserEntity.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+                    authUserEntities.add(authUserEntity);
+                }
+                return authUserEntities;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
