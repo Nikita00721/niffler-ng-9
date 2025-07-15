@@ -1,5 +1,7 @@
 package guru.qa.niffler.data.dao;
 
+import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+
 public interface AuthAuthorityDao {
-    boolean hasAuthority(String username);
+    void create(AuthorityEntity... authority);
 }
