@@ -3,7 +3,6 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.entity.user.UserEntity;
-import guru.qa.niffler.model.CurrencyValues;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,7 +54,7 @@ public class UdUserDaoJdbc implements UdUserDao {
                 UserEntity result = new UserEntity();
                 result.setId(rs.getObject("id", UUID.class));
                 result.setUsername(rs.getString("username"));
-                result.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                result.setCurrency(guru.qa.niffler.data.entity.user.CurrencyValues.valueOf(rs.getString("currency")));
                 result.setFirstname(rs.getString("firstname"));
                 result.setSurname(rs.getString("surname"));
                 result.setPhoto(rs.getBytes("photo"));
@@ -79,7 +78,7 @@ public class UdUserDaoJdbc implements UdUserDao {
                     UserEntity result = new UserEntity();
                     result.setId(rs.getObject("id", UUID.class));
                     result.setUsername(rs.getString("username"));
-                    result.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    result.setCurrency(guru.qa.niffler.data.entity.user.CurrencyValues.valueOf(rs.getString("currency")));
                     result.setFirstname(rs.getString("firstname"));
                     result.setSurname(rs.getString("surname"));
                     result.setPhoto(rs.getBytes("photo"));

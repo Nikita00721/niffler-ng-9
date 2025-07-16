@@ -59,7 +59,7 @@ public class UserDaoJdbc implements UserDao {
                 if (rs.next()) {
                     UserEntity user = new UserEntity();
                     user.setId(rs.getObject("id", UUID.class));
-                    user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    user.setCurrency(guru.qa.niffler.data.entity.user.CurrencyValues.valueOf(rs.getString("currency")));
                     user.setFirstname(rs.getString("firstname"));
                     user.setFullname(rs.getString("full_name"));
                     user.setPhoto(rs.getBytes("photo"));
@@ -86,7 +86,7 @@ public class UserDaoJdbc implements UserDao {
                 if (rs.next()) {
                     UserEntity user = new UserEntity();
                     user.setId(rs.getObject("id", UUID.class));
-                    user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    user.setCurrency(guru.qa.niffler.data.entity.user.CurrencyValues.valueOf(rs.getString("currency")));
                     user.setFirstname(rs.getString("firstname"));
                     user.setFullname(rs.getString("full_name"));
                     user.setPhoto(rs.getBytes("photo"));
