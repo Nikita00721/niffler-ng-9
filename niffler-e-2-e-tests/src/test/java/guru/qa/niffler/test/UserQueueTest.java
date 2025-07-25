@@ -67,7 +67,7 @@ public class UserQueueTest {
     }
 
     @Test
-    void qwe() {
+    void qwe() throws Exception {
         SpendDbClient spendDbClient = new SpendDbClient();
 
         List<SpendJson> newJson = spendDbClient.findSpendsByUsername("duck");

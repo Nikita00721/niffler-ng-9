@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class JdbcTest {
     @Test
-    void txTest() {
+    void txTest() throws Exception {
         SpendDbClient spendDbClient = new SpendDbClient();
 
         SpendJson spendJson = spendDbClient.createSpend(
