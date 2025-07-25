@@ -7,7 +7,7 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
