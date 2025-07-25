@@ -1,14 +1,33 @@
 package guru.qa.niffler.data.entity.user;
 
+import guru.qa.niffler.data.entity.user.FriendshipEntity;
+import guru.qa.niffler.data.entity.user.FriendshipStatus;
+import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Getter
@@ -51,27 +70,27 @@ public class UserEntity implements Serializable {
 
   public void addFriends(FriendshipStatus status, UserEntity... friends) {
     List<FriendshipEntity> friendsEntities = Stream.of(friends)
-        .map(f -> {
-          FriendshipEntity fe = new FriendshipEntity();
-          fe.setRequester(this);
-          fe.setAddressee(f);
-          fe.setStatus(status);
-          fe.setCreatedDate(new Date());
-          return fe;
-        }).toList();
+            .map(f -> {
+              FriendshipEntity fe = new FriendshipEntity();
+              fe.setRequester(this);
+              fe.setAddressee(f);
+              fe.setStatus(status);
+              fe.setCreatedDate(new Date());
+              return fe;
+            }).toList();
     this.friendshipRequests.addAll(friendsEntities);
   }
 
   public void addInvitations(UserEntity... invitations) {
     List<FriendshipEntity> invitationsEntities = Stream.of(invitations)
-        .map(i -> {
-          FriendshipEntity fe = new FriendshipEntity();
-          fe.setRequester(i);
-          fe.setAddressee(this);
-          fe.setStatus(FriendshipStatus.PENDING);
-          fe.setCreatedDate(new Date());
-          return fe;
-        }).toList();
+            .map(i -> {
+              FriendshipEntity fe = new FriendshipEntity();
+              fe.setRequester(i);
+              fe.setAddressee(this);
+              fe.setStatus(FriendshipStatus.PENDING);
+              fe.setCreatedDate(new Date());
+              return fe;
+            }).toList();
     this.friendshipAddressees.addAll(invitationsEntities);
   }
 
@@ -97,6 +116,19 @@ public class UserEntity implements Serializable {
     }
   }
 
+  public static UserEntity fromJson(UserJson json) {
+    UserEntity ue = new UserEntity();
+    ue.setId(json.id());
+    ue.setUsername(json.username());
+    ue.setCurrency(json.currency());
+    ue.setFirstname(json.firstname());
+    ue.setSurname(json.surname());
+    ue.setFullname(json.fullname());
+    ue.setPhoto(json.photo() != null ? json.photo().getBytes(StandardCharsets.UTF_8) : null);
+    ue.setPhotoSmall(json.photoSmall() != null ? json.photoSmall().getBytes(StandardCharsets.UTF_8) : null);
+    return ue;
+  }
+
   @Override
   public final boolean equals(Object o) {
     if (this == o) return true;
@@ -111,18 +143,5 @@ public class UserEntity implements Serializable {
   @Override
   public final int hashCode() {
     return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-  }
-
-  public static UserEntity fromJson(UserJson json) {
-    UserEntity ue = new UserEntity();
-    ue.setId(json.id());
-    ue.setUsername(json.username());
-    ue.setCurrency(CurrencyValues.valueOf(json.currency().name()));
-    ue.setFirstname(json.firstname());
-    ue.setSurname(json.surname());
-    ue.setFullname(json.fullname());
-    ue.setPhoto(json.photo() != null ? json.photo().getBytes(StandardCharsets.UTF_8) : null);
-    ue.setPhotoSmall(json.photoSmall() != null ? json.photoSmall().getBytes(StandardCharsets.UTF_8) : null);
-    return ue;
   }
 }
