@@ -3,46 +3,33 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
   private final SelenideElement usernameInput = $("input[name='username']");
   private final SelenideElement passwordInput = $("input[name='password']");
   private final SelenideElement submitButton = $("button[type='submit']");
-  private final SelenideElement registerButton = $("#register-button");
-  private final SelenideElement badCredentialsErrorMessage = $(byText("Bad credentials"));
+  private final SelenideElement registerButton = $("a[href='/register']");
+  private final SelenideElement errorContainer = $(".form__error");
 
-  public LoginPage checkThatPageLoaded() {
-    registerButton.should(visible);
-    return this;
-  }
-
-  public LoginPage fillLoginPage(String username, String password) {
-    usernameInput.setValue(username);
-    passwordInput.setValue(password);
-    return this;
-  }
-
-  public MainPage submit() {
-    submitButton.click();
-    return new MainPage();
-  }
-
-  public LoginPage clickSubmitButton() {
-    submitButton.click();
-    return this;
-  }
-
-  public RegisterPage createNewAccountClick() {
+  public RegisterPage doRegister() {
     registerButton.click();
     return new RegisterPage();
   }
 
-  public LoginPage checkBadCredentialsErrorMessage() {
-    badCredentialsErrorMessage.shouldBe(visible)
-            .shouldHave(text(ErrorMessages.BAD_CREDENTIALS.getText()));
+  public MainPage successLogin(String username, String password) {
+    fillLoginPage(username, password);
+    return new MainPage();
+  }
+
+  public void fillLoginPage(String username, String password) {
+    usernameInput.setValue(username);
+    passwordInput.setValue(password);
+    submitButton.click();
+  }
+
+  public LoginPage checkError(String error) {
+    errorContainer.shouldHave(text(error));
     return this;
   }
 }

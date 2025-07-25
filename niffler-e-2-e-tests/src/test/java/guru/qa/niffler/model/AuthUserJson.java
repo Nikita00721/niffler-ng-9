@@ -1,14 +1,13 @@
 package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 
 import java.util.UUID;
 
-@Getter
-@Setter
 public record AuthUserJson(
     @JsonProperty("id") UUID id,
     @JsonProperty("username") String username,

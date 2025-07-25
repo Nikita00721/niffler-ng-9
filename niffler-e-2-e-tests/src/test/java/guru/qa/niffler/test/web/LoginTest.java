@@ -1,4 +1,4 @@
-package guru.qa.niffler.test;
+package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
@@ -12,23 +12,18 @@ import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 public class LoginTest {
 
   private static final Config CFG = Config.getInstance();
-  private static final String correctLogin = "duck";
-  private static final String correctPassword = "12345";
-  private static final String uncorrectPassword = "123456";
 
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin() {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage(correctLogin, correctPassword)
-        .submit()
+        .successLogin("duck", "12345")
         .checkThatPageLoaded();
   }
 
   @Test
-  void userGetBadCredentialsErrorMessageWithWrongPassword() {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-            .fillLoginPage(randomUsername(), uncorrectPassword)
-            .clickSubmitButton()
-            .checkBadCredentialsErrorMessage();
+  void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
+    LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
+    loginPage.fillLoginPage(randomUsername(), "BAD");
+    loginPage.checkError("Bad credentials");
   }
 }

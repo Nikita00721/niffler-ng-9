@@ -7,10 +7,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UdUserDao {
+public interface UserdataUserDao {
     UserEntity create(UserEntity user);
 
     Optional<UserEntity> findById(UUID id);
 
+    Optional<UserEntity> findByUsername(String username);
+
     List<UserEntity> findAll();
+
+    UserEntity update(UserEntity user);
 }
