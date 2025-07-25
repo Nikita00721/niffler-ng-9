@@ -8,6 +8,7 @@ import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
+import guru.qa.niffler.data.mapper.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
