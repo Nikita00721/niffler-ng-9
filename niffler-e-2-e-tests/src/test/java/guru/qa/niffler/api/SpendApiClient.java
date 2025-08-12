@@ -8,122 +8,134 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@ParametersAreNonnullByDefault
 public class SpendApiClient {
 
   private static final Config CFG = Config.getInstance();
 
-  private static final Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl(CFG.spendUrl())
-      .addConverterFactory(JacksonConverterFactory.create())
-      .build();
+  private final Retrofit retrofit = new Retrofit.Builder()
+          .baseUrl(CFG.spendUrl())
+          .addConverterFactory(JacksonConverterFactory.create())
+          .build();
 
   private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
+  @Nullable
   public SpendJson addSpend(SpendJson spend) {
+    final Response<SpendJson> response;
     try {
-      Response<SpendJson> response = spendApi.addSpend(spend).execute();
-      if (!response.isSuccessful()) {
-        throw new ApiException("Failed to create spend. Code: " + response.code());
-      }
-      return response.body();
+      response = spendApi.addSpend(spend)
+              .execute();
     } catch (IOException e) {
-      throw new ApiException("Network error while creating spend", e);
+      throw new AssertionError(e);
     }
+    assertEquals(201, response.code());
+    return response.body();
   }
 
+  @Nullable
   public SpendJson editSpend(SpendJson spend) {
+    final Response<SpendJson> response;
     try {
-      Response<SpendJson> response = spendApi.editSpend(spend).execute();
-      if (response.code() != 200) {
-        throw new ApiException("Failed to edit spend. Code: " + response.code());
-      }
-      return response.body();
+      response = spendApi.editSpend(spend)
+              .execute();
     } catch (IOException e) {
-      throw new ApiException("Network error while editing spend", e);
+      throw new AssertionError(e);
     }
+    assertEquals(200, response.code());
+    return response.body();
   }
 
-  public SpendJson getSpendById(String id) {
+  @Nullable
+  public SpendJson getSpend(String id) {
+    final Response<SpendJson> response;
     try {
-      Response<SpendJson> response = spendApi.getSpendById(id).execute();
-      if (response.code() != 200) {
-        throw new ApiException("Spend not found. Code: " + response.code());
-      }
-      return response.body();
+      response = spendApi.getSpend(id)
+              .execute();
     } catch (IOException e) {
-      throw new ApiException("Network error while fetching spend", e);
+      throw new AssertionError(e);
     }
+    assertEquals(200, response.code());
+    return response.body();
   }
 
-  public List<SpendJson> getAllSpends(List<String> ids, CurrencyValues currencyFilter) {
+  @Nonnull
+  public List<SpendJson> allSpends(String username,
+                                   @Nullable CurrencyValues currency,
+                                   @Nullable String from,
+                                   @Nullable String to) {
+    final Response<List<SpendJson>> response;
     try {
-      Response<List<SpendJson>> response = spendApi.getAllSpends(ids, currencyFilter).execute();
-      if (response.code() != 200) {
-        throw new ApiException("Failed to get spends. Code: " + response.code());
-      }
-      return response.body();
+      response = spendApi.allSpends(username, currency, from, to)
+              .execute();
     } catch (IOException e) {
-      throw new ApiException("Network error while fetching spends", e);
+      throw new AssertionError(e);
     }
+    assertEquals(200, response.code());
+    return response.body() != null
+            ? response.body()
+            : Collections.emptyList();
   }
 
-  public void deleteSpend(String id) {
+  public void removeSpends(String username, String... ids) {
+    final Response<Void> response;
     try {
-      Response<Void> response = spendApi.removeSpend(id).execute();
-      if (response.code() != 200) {
-        throw new ApiException("Failed to delete spend. Code: " + response.code());
-      }
+      response = spendApi.removeSpends(username, Arrays.stream(ids).toList())
+              .execute();
     } catch (IOException e) {
-      throw new ApiException("Network error while deleting spend", e);
+      throw new AssertionError(e);
     }
+    assertEquals(200, response.code());
   }
 
+  @Nullable
   public CategoryJson createCategory(CategoryJson category) {
+    final Response<CategoryJson> response;
     try {
-      Response<CategoryJson> response = spendApi.addCategory(category).execute();
-      if (response.code() != 200) {
-        throw new ApiException("Failed to create category. Code: " + response.code());
-      }
-      return response.body();
+      response = spendApi.addCategory(category)
+              .execute();
     } catch (IOException e) {
-      throw new ApiException("Network error while creating category", e);
+      throw new AssertionError(e);
     }
+    assertEquals(200, response.code());
+    return response.body();
   }
 
+  @Nullable
   public CategoryJson updateCategory(CategoryJson category) {
+    final Response<CategoryJson> response;
     try {
-      Response<CategoryJson> response = spendApi.updateCategory(category).execute();
-      if (response.code() != 200) {
-        throw new ApiException("Failed to update category. Code: " + response.code());
-      }
-      return response.body();
+      response = spendApi.updateCategory(category)
+              .execute();
     } catch (IOException e) {
-      throw new ApiException("Network error while updating category", e);
+      throw new AssertionError(e);
     }
+    assertEquals(200, response.code());
+    return response.body();
   }
 
-  public List<CategoryJson> getAllCategories() {
+  @Nonnull
+  public List<CategoryJson> allCategory(String username) {
+    final Response<List<CategoryJson>> response;
     try {
-      Response<List<CategoryJson>> response = spendApi.getAllCategories().execute();
-      if (response.code() != 200) {
-        throw new ApiException("Failed to get categories. Code: " + response.code());
-      }
-      return response.body();
+      response = spendApi.allCategories(username)
+              .execute();
     } catch (IOException e) {
-      throw new ApiException("Network error while fetching categories", e);
+      throw new AssertionError(e);
     }
-  }
-
-  public static class ApiException extends RuntimeException {
-    public ApiException(String message) {
-      super(message);
-    }
-
-    public ApiException(String message, Throwable cause) {
-      super(message, cause);
-    }
+    assertEquals(200, response.code());
+    return response.body() != null
+            ? response.body()
+            : Collections.emptyList();
   }
 }
