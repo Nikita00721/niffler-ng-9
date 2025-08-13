@@ -1,15 +1,27 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.impl.UsersDbClient;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public interface UsersClient {
-    UserJson createUser(String username, String password) throws Exception;
+    static UsersClient getInstance() {
+        return new UsersDbClient();
+    }
 
-    List<UserJson> addIncomeInvitation(UserJson targetUser, int count) throws Exception;
+    @Nonnull
+    UserJson createUser(String username, String password);
 
-    List<UserJson> addOutcomeInvitation(UserJson targetUser, int count) throws Exception;
+    @Nonnull
+    List<UserJson> addIncomeInvitation(UserJson targetUser, int count);
 
-    List<UserJson> addFriend(UserJson targetUser, int count) throws Exception;
+    @Nonnull
+    List<UserJson> addOutcomeInvitation(UserJson targetUser, int count);
+
+    @Nonnull
+    List<UserJson> addFriend(UserJson targetUser, int count);
 }

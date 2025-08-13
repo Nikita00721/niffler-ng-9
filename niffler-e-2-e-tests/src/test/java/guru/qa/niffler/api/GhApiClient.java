@@ -1,36 +1,35 @@
 package guru.qa.niffler.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.config.GhApi;
-import lombok.NonNull;
-import lombok.SneakyThrows;
+import guru.qa.niffler.service.RestClient;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GhApiClient {
+@ParametersAreNonnullByDefault
+public final class GhApiClient extends RestClient {
 
-  private static final Config CFG = Config.getInstance();
   private static final String GH_TOKEN_ENV = "GITHUB_TOKEN";
 
-  private static final Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl(CFG.ghUrl())
-      .addConverterFactory(JacksonConverterFactory.create())
-      .build();
+  private final GhApi ghApi;
 
-  private final GhApi ghApi = retrofit.create(GhApi.class);
+  public GhApiClient() {
+    super(CFG.ghUrl());
+    this.ghApi = create(GhApi.class);
+  }
 
-  public @NonNull String issueState(@NonNull String issueNumber) {
+  @Nonnull
+  public String issueState(String issueNumber) {
     final Response<JsonNode> response;
     try {
       response = ghApi.issue(
-              "Bearer" + System.getenv(GH_TOKEN_ENV),
+              "Bearer " + System.getenv(GH_TOKEN_ENV),
               issueNumber
       ).execute();
     } catch (IOException e) {
@@ -38,15 +37,5 @@ public class GhApiClient {
     }
     assertEquals(200, response.code());
     return Objects.requireNonNull(response.body()).get("state").asText();
-  }
-
-  public static class ApiException extends RuntimeException {
-    public ApiException(String message) {
-      super(message);
-    }
-
-    public ApiException(String message, Throwable cause) {
-      super(message, cause);
-    }
   }
 }

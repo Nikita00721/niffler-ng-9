@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
@@ -9,6 +9,7 @@ import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.service.SpendClient;
 
 
 public class SpendDbClient implements SpendClient {
@@ -22,17 +23,21 @@ public class SpendDbClient implements SpendClient {
             CFG.spendJdbcUrl()
     );
 
-    public SpendJson createSpend(SpendJson spend) throws Exception {
-        return jdbcTxTemplate.execute(() -> {
-                    SpendEntity spendEntity = SpendEntity.fromJson(spend);
-                    if (spendEntity.getCategory().getId() == null) {
-                        CategoryEntity categoryEntity = categoryDao.create(spendEntity.getCategory());
-                        spendEntity.setCategory(categoryEntity);
+    public SpendJson createSpend(SpendJson spend) {
+        try {
+            return jdbcTxTemplate.execute(() -> {
+                        SpendEntity spendEntity = SpendEntity.fromJson(spend);
+                        if (spendEntity.getCategory().getId() == null) {
+                            CategoryEntity categoryEntity = categoryDao.create(spendEntity.getCategory());
+                            spendEntity.setCategory(categoryEntity);
+                        }
+                        return SpendJson.fromEntity(
+                                spendDao.create(spendEntity)
+                        );
                     }
-                    return SpendJson.fromEntity(
-                            spendDao.create(spendEntity)
-                    );
-                }
-        );
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

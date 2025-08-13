@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -13,6 +13,7 @@ import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.UsersClient;
 import jaxb.userdata.FriendshipStatus;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -46,46 +47,54 @@ public class UsersDbClient implements UsersClient {
     );
 
     @Override
-    public UserJson createUser(String username, String password) throws Exception {
-        return xaTransactionTemplate.execute(() -> {
-                    AuthUserEntity authUser = authUserEntity(username, password);
-                    authUserRepository.create(authUser);
-                    return UserJson.fromEntity(
-                            userdataUserRepository.create(userEntity(username)),
-                            null
+    public UserJson createUser(String username, String password) {
+        try {
+            return xaTransactionTemplate.execute(() -> {
+                        AuthUserEntity authUser = authUserEntity(username, password);
+                        authUserRepository.create(authUser);
+                        return UserJson.fromEntity(
+                                userdataUserRepository.create(userEntity(username)),
+                                null
+                        );
+                    }
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<UserJson> addIncomeInvitation(UserJson targetUser, int count) {
+        final List<UserJson> result = new ArrayList<>();
+        if (count > 0) {
+            UserEntity targetEntity = userdataUserRepository.findById(
+                    targetUser.id()
+            ).orElseThrow();
+            for (int i = 0; i < count; i++) {
+                try {
+                    xaTransactionTemplate.execute(() -> {
+                                String username = randomUsername();
+                                AuthUserEntity authUser = authUserEntity(username, "12345");
+                                authUserRepository.create(authUser);
+                                UserEntity adressee = userdataUserRepository.create(userEntity(username));
+                                userdataUserRepository.addFriendshipRequest(adressee, targetEntity);
+                                result.add(UserJson.fromEntity(
+                                        adressee,
+                                        FriendshipStatus.INVITE_RECEIVED
+                                ));
+                                return null;
+                            }
                     );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
-        );
-    }
-
-    @Override
-    public List<UserJson> addIncomeInvitation(UserJson targetUser, int count) throws Exception {
-        final List<UserJson> result = new ArrayList<>();
-        if (count > 0) {
-            UserEntity targetEntity = userdataUserRepository.findById(
-                    targetUser.id()
-            ).orElseThrow();
-            for (int i = 0; i < count; i++) {
-                xaTransactionTemplate.execute(() -> {
-                            String username = randomUsername();
-                            AuthUserEntity authUser = authUserEntity(username, "12345");
-                            authUserRepository.create(authUser);
-                            UserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.addFriendshipRequest(adressee, targetEntity);
-                            result.add(UserJson.fromEntity(
-                                    adressee,
-                                    FriendshipStatus.INVITE_RECEIVED
-                            ));
-                            return null;
-                        }
-                );
             }
         }
         return result;
     }
 
     @Override
-    public List<UserJson> addOutcomeInvitation(UserJson targetUser, int count) throws Exception {
+    public List<UserJson> addOutcomeInvitation(UserJson targetUser, int count) {
         final List<UserJson> result = new ArrayList<>();
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
@@ -93,26 +102,30 @@ public class UsersDbClient implements UsersClient {
             ).orElseThrow();
 
             for (int i = 0; i < count; i++) {
-                xaTransactionTemplate.execute(() -> {
-                            String username = randomUsername();
-                            AuthUserEntity authUser = authUserEntity(username, "12345");
-                            authUserRepository.create(authUser);
-                            UserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.addFriendshipRequest(targetEntity, adressee);
-                            result.add(UserJson.fromEntity(
-                                    adressee,
-                                    FriendshipStatus.INVITE_RECEIVED
-                            ));
-                            return null;
-                        }
-                );
+                try {
+                    xaTransactionTemplate.execute(() -> {
+                                String username = randomUsername();
+                                AuthUserEntity authUser = authUserEntity(username, "12345");
+                                authUserRepository.create(authUser);
+                                UserEntity adressee = userdataUserRepository.create(userEntity(username));
+                                userdataUserRepository.addFriendshipRequest(targetEntity, adressee);
+                                result.add(UserJson.fromEntity(
+                                        adressee,
+                                        FriendshipStatus.INVITE_RECEIVED
+                                ));
+                                return null;
+                            }
+                    );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         return result;
     }
 
     @Override
-    public List<UserJson> addFriend(UserJson targetUser, int count) throws Exception {
+    public List<UserJson> addFriend(UserJson targetUser, int count) {
         final List<UserJson> result = new ArrayList<>();
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
@@ -120,19 +133,23 @@ public class UsersDbClient implements UsersClient {
             ).orElseThrow();
 
             for (int i = 0; i < count; i++) {
-                xaTransactionTemplate.execute(() -> {
-                            String username = randomUsername();
-                            AuthUserEntity authUser = authUserEntity(username, "12345");
-                            authUserRepository.create(authUser);
-                            UserEntity adressee = userdataUserRepository.create(userEntity(username));
-                            userdataUserRepository.addFriend(targetEntity, adressee);
-                            result.add(UserJson.fromEntity(
-                                    adressee,
-                                    FriendshipStatus.FRIEND
-                            ));
-                            return null;
-                        }
-                );
+                try {
+                    xaTransactionTemplate.execute(() -> {
+                                String username = randomUsername();
+                                AuthUserEntity authUser = authUserEntity(username, "12345");
+                                authUserRepository.create(authUser);
+                                UserEntity adressee = userdataUserRepository.create(userEntity(username));
+                                userdataUserRepository.addFriend(targetEntity, adressee);
+                                result.add(UserJson.fromEntity(
+                                        adressee,
+                                        FriendshipStatus.FRIEND
+                                ));
+                                return null;
+                            }
+                    );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         return result;
