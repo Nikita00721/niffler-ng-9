@@ -10,9 +10,9 @@ import static com.codeborne.selenide.Selenide.$;
 @ParametersAreNonnullByDefault
 public class Header {
 
-    private final SelenideElement self = $("#root header");
+  private final SelenideElement self = $("#root header");
 
-    public void checkHeaderText() {
-        self.$("h1").shouldHave(text("Niffler"));
-    }
+  public void checkHeaderText() {
+    self.$("h1").shouldHave(text("Niffler"));
+  }
 }

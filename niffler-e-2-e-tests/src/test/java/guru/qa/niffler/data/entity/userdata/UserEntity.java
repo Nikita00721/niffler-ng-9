@@ -1,7 +1,5 @@
-package guru.qa.niffler.data.entity.user;
+package guru.qa.niffler.data.entity.userdata;
 
-import guru.qa.niffler.data.entity.user.FriendshipEntity;
-import guru.qa.niffler.data.entity.user.FriendshipStatus;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import jakarta.persistence.CascadeType;
@@ -70,27 +68,27 @@ public class UserEntity implements Serializable {
 
   public void addFriends(FriendshipStatus status, UserEntity... friends) {
     List<FriendshipEntity> friendsEntities = Stream.of(friends)
-            .map(f -> {
-              FriendshipEntity fe = new FriendshipEntity();
-              fe.setRequester(this);
-              fe.setAddressee(f);
-              fe.setStatus(status);
-              fe.setCreatedDate(new Date());
-              return fe;
-            }).toList();
+        .map(f -> {
+          FriendshipEntity fe = new FriendshipEntity();
+          fe.setRequester(this);
+          fe.setAddressee(f);
+          fe.setStatus(status);
+          fe.setCreatedDate(new Date());
+          return fe;
+        }).toList();
     this.friendshipRequests.addAll(friendsEntities);
   }
 
   public void addInvitations(UserEntity... invitations) {
     List<FriendshipEntity> invitationsEntities = Stream.of(invitations)
-            .map(i -> {
-              FriendshipEntity fe = new FriendshipEntity();
-              fe.setRequester(i);
-              fe.setAddressee(this);
-              fe.setStatus(FriendshipStatus.PENDING);
-              fe.setCreatedDate(new Date());
-              return fe;
-            }).toList();
+        .map(i -> {
+          FriendshipEntity fe = new FriendshipEntity();
+          fe.setRequester(i);
+          fe.setAddressee(this);
+          fe.setStatus(FriendshipStatus.PENDING);
+          fe.setCreatedDate(new Date());
+          return fe;
+        }).toList();
     this.friendshipAddressees.addAll(invitationsEntities);
   }
 

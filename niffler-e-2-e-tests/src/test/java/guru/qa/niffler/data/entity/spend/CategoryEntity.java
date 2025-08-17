@@ -1,7 +1,12 @@
 package guru.qa.niffler.data.entity.spend;
 
 import guru.qa.niffler.model.CategoryJson;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
@@ -29,6 +34,15 @@ public class CategoryEntity implements Serializable {
   @Column(nullable = false)
   private boolean archived;
 
+  public static CategoryEntity fromJson(CategoryJson json) {
+    CategoryEntity ce = new CategoryEntity();
+    ce.setId(json.id());
+    ce.setName(json.name());
+    ce.setUsername(json.username());
+    ce.setArchived(json.archived());
+    return ce;
+  }
+
   @Override
   public final boolean equals(Object o) {
     if (this == o) return true;
@@ -43,14 +57,5 @@ public class CategoryEntity implements Serializable {
   @Override
   public final int hashCode() {
     return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-  }
-
-  public static CategoryEntity fromJson(CategoryJson json) {
-    CategoryEntity ce = new CategoryEntity();
-    ce.setId(json.id());
-    ce.setName(json.name());
-    ce.setUsername(json.username());
-    ce.setArchived(ce.isArchived());
-    return ce;
   }
 }
