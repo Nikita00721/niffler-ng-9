@@ -1,7 +1,7 @@
-package guru.qa.niffler.data.entity.user;
+package guru.qa.niffler.data.entity.userdata;
 
-import guru.qa.niffler.data.entity.user.FriendshipEntity;
-import guru.qa.niffler.data.entity.user.FriendshipStatus;
+import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
+import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import jakarta.persistence.CascadeType;
@@ -63,41 +63,41 @@ public class UserEntity implements Serializable {
   private byte[] photoSmall;
 
   @OneToMany(mappedBy = "requester", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<FriendshipEntity> friendshipRequests = new ArrayList<>();
+  private List<guru.qa.niffler.data.entity.userdata.FriendshipEntity> friendshipRequests = new ArrayList<>();
 
   @OneToMany(mappedBy = "addressee", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<FriendshipEntity> friendshipAddressees = new ArrayList<>();
+  private List<guru.qa.niffler.data.entity.userdata.FriendshipEntity> friendshipAddressees = new ArrayList<>();
 
-  public void addFriends(FriendshipStatus status, UserEntity... friends) {
-    List<FriendshipEntity> friendsEntities = Stream.of(friends)
-            .map(f -> {
-              FriendshipEntity fe = new FriendshipEntity();
-              fe.setRequester(this);
-              fe.setAddressee(f);
-              fe.setStatus(status);
-              fe.setCreatedDate(new Date());
-              return fe;
-            }).toList();
+  public void addFriends(guru.qa.niffler.data.entity.userdata.FriendshipStatus status, UserEntity... friends) {
+    List<guru.qa.niffler.data.entity.userdata.FriendshipEntity> friendsEntities = Stream.of(friends)
+        .map(f -> {
+          guru.qa.niffler.data.entity.userdata.FriendshipEntity fe = new guru.qa.niffler.data.entity.userdata.FriendshipEntity();
+          fe.setRequester(this);
+          fe.setAddressee(f);
+          fe.setStatus(status);
+          fe.setCreatedDate(new Date());
+          return fe;
+        }).toList();
     this.friendshipRequests.addAll(friendsEntities);
   }
 
   public void addInvitations(UserEntity... invitations) {
-    List<FriendshipEntity> invitationsEntities = Stream.of(invitations)
-            .map(i -> {
-              FriendshipEntity fe = new FriendshipEntity();
-              fe.setRequester(i);
-              fe.setAddressee(this);
-              fe.setStatus(FriendshipStatus.PENDING);
-              fe.setCreatedDate(new Date());
-              return fe;
-            }).toList();
+    List<guru.qa.niffler.data.entity.userdata.FriendshipEntity> invitationsEntities = Stream.of(invitations)
+        .map(i -> {
+          guru.qa.niffler.data.entity.userdata.FriendshipEntity fe = new guru.qa.niffler.data.entity.userdata.FriendshipEntity();
+          fe.setRequester(i);
+          fe.setAddressee(this);
+          fe.setStatus(FriendshipStatus.PENDING);
+          fe.setCreatedDate(new Date());
+          return fe;
+        }).toList();
     this.friendshipAddressees.addAll(invitationsEntities);
   }
 
   public void removeFriends(UserEntity... friends) {
     List<UUID> idsToBeRemoved = Arrays.stream(friends).map(UserEntity::getId).toList();
-    for (Iterator<FriendshipEntity> i = getFriendshipRequests().iterator(); i.hasNext(); ) {
-      FriendshipEntity friendsEntity = i.next();
+    for (Iterator<guru.qa.niffler.data.entity.userdata.FriendshipEntity> i = getFriendshipRequests().iterator(); i.hasNext(); ) {
+      guru.qa.niffler.data.entity.userdata.FriendshipEntity friendsEntity = i.next();
       if (idsToBeRemoved.contains(friendsEntity.getAddressee().getId())) {
         friendsEntity.setAddressee(null);
         i.remove();
@@ -107,7 +107,7 @@ public class UserEntity implements Serializable {
 
   public void removeInvites(UserEntity... invitations) {
     List<UUID> idsToBeRemoved = Arrays.stream(invitations).map(UserEntity::getId).toList();
-    for (Iterator<FriendshipEntity> i = getFriendshipAddressees().iterator(); i.hasNext(); ) {
+    for (Iterator<guru.qa.niffler.data.entity.userdata.FriendshipEntity> i = getFriendshipAddressees().iterator(); i.hasNext(); ) {
       FriendshipEntity friendsEntity = i.next();
       if (idsToBeRemoved.contains(friendsEntity.getRequester().getId())) {
         friendsEntity.setRequester(null);
