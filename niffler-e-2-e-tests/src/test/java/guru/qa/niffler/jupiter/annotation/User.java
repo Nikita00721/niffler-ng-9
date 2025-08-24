@@ -1,7 +1,5 @@
 package guru.qa.niffler.jupiter.annotation;
 
-import guru.qa.niffler.jupiter.annotation.Category;
-import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.extension.CategoryExtension;
 import guru.qa.niffler.jupiter.extension.SpendingExtension;
 import guru.qa.niffler.jupiter.extension.UserExtension;

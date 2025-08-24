@@ -1,8 +1,5 @@
 package guru.qa.niffler.config;
 
-import guru.qa.niffler.config.DockerConfig;
-import guru.qa.niffler.config.LocalConfig;
-
 import javax.annotation.Nonnull;
 
 public interface Config {
@@ -10,8 +7,8 @@ public interface Config {
   @Nonnull
   static Config getInstance() {
     return "docker".equals(System.getProperty("test.env"))
-        ? guru.qa.niffler.config.DockerConfig.INSTANCE
-        : guru.qa.niffler.config.LocalConfig.INSTANCE;
+        ? DockerConfig.INSTANCE
+        : LocalConfig.INSTANCE;
   }
 
   @Nonnull

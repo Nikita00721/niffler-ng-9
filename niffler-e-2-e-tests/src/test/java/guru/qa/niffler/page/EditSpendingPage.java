@@ -4,7 +4,6 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.page.BasePage;
 import guru.qa.niffler.page.component.Calendar;
 import guru.qa.niffler.page.component.SelectField;
 import io.qameta.allure.Step;

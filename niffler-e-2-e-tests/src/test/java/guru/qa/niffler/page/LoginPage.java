@@ -1,8 +1,6 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.page.BasePage;
-import guru.qa.niffler.page.RegisterPage;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
@@ -24,7 +22,7 @@ public class LoginPage extends BasePage<LoginPage> {
   private final SelenideElement errorContainer = $(".form__error");
 
   @Nonnull
-  public guru.qa.niffler.page.RegisterPage doRegister() {
+  public RegisterPage doRegister() {
     registerButton.click();
     return new RegisterPage();
   }

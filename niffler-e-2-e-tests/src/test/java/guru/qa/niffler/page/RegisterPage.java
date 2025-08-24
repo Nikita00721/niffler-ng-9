@@ -1,8 +1,6 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.page.BasePage;
-import guru.qa.niffler.page.LoginPage;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;

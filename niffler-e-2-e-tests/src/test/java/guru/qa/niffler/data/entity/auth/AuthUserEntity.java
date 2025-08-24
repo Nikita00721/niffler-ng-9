@@ -1,14 +1,6 @@
 package guru.qa.niffler.data.entity.auth;
 
-import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
@@ -50,10 +42,10 @@ public class AuthUserEntity implements Serializable {
   private Boolean credentialsNonExpired;
 
   @OneToMany(fetch = EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-  private List<guru.qa.niffler.data.entity.auth.AuthorityEntity> authorities = new ArrayList<>();
+  private List<AuthorityEntity> authorities = new ArrayList<>();
 
-  public void addAuthorities(guru.qa.niffler.data.entity.auth.AuthorityEntity... authorities) {
-    for (guru.qa.niffler.data.entity.auth.AuthorityEntity authority : authorities) {
+  public void addAuthorities(AuthorityEntity... authorities) {
+    for (AuthorityEntity authority : authorities) {
       this.authorities.add(authority);
       authority.setUser(this);
     }
