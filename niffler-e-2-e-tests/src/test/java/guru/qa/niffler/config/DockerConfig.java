@@ -1,5 +1,7 @@
 package guru.qa.niffler.config;
 
+import guru.qa.niffler.config.Config;
+
 import javax.annotation.Nonnull;
 
 enum DockerConfig implements Config {

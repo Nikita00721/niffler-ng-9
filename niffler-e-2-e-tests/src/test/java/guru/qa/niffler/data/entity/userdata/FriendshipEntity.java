@@ -1,5 +1,8 @@
 package guru.qa.niffler.data.entity.userdata;
 
+import guru.qa.niffler.data.entity.userdata.FriendShipId;
+import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

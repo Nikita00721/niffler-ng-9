@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.FriendshipStatus;
+import guru.qa.niffler.model.TestData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,7 +33,7 @@ public record UserJson(
     @JsonProperty("photoSmall")
     String photoSmall,
     @JsonProperty("friendshipStatus")
-    FriendshipStatus friendshipStatus,
+    guru.qa.niffler.model.FriendshipStatus friendshipStatus,
     @JsonIgnore
     TestData testData) {
 

@@ -1,6 +1,7 @@
 package guru.qa.niffler.data.jpa;
 
 import guru.qa.niffler.data.jdbc.DataSources;
+import guru.qa.niffler.data.jpa.ThreadSafeEntityManager;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
