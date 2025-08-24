@@ -13,9 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import retrofit2.Response;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
@@ -140,5 +142,20 @@ public class UsersApiClient implements UsersClient {
       }
     }
     return result;
+  }
+
+  @NotNull
+  @Override
+  public List<UserJson> allUsers(String username, @Nullable String searchQuery) {
+    final Response<List<UserJson>> response;
+    try {
+      response = userdataApi.allUsers(username, searchQuery).execute();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    assertEquals(200, response.code());
+    return response.body() != null
+            ? response.body()
+            : Collections.emptyList();
   }
 }
